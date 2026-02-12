@@ -27,12 +27,18 @@ class AlertController extends Controller
         $data = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'message' => 'required|string',
+            'type' => 'nullable|string',
         ]);
 
-        $alert = Alert::create($data);
+        $alert = Alert::create([
+            'customer_id' => $data['customer_id'],
+            'message' => $data['message'],
+            'type' => $data['type'] ?? 'info',
+            'is_read' => false,
+        ]);
 
         return response()->json([
-            'message' => 'Alert created successfully',
+            'message' => 'Alert saved successfully',
             'data' => $alert
         ], 201);
     }
@@ -53,6 +59,8 @@ class AlertController extends Controller
             $alert = Alert::create([
                 'customer_id' => $data['customer_id'],
                 'message' => $message,
+                'type' => 'warning',
+                'is_read' => false,
             ]);
 
             return response()->json([
@@ -64,5 +72,14 @@ class AlertController extends Controller
         return response()->json([
             'message' => 'Usage is normal, no alert created'
         ]);
+    }
+
+    // POST /api/alerts/{id}/read
+    public function markAsRead($id)
+    {
+        $alert = Alert::findOrFail($id);
+        $alert->update(['is_read' => true]);
+
+        return response()->json(['message' => 'Alert marked as read']);
     }
 }

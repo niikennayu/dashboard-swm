@@ -12,6 +12,12 @@ class Alert extends Model
     protected $fillable = [
         'customer_id',
         'message',
+        'type',
+        'is_read',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 
     public function customer()
