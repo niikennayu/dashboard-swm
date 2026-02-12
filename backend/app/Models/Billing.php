@@ -22,6 +22,7 @@ class Billing extends Model
         'period' => 'date',
     ];
 
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
